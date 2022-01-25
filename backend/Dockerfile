@@ -9,6 +9,6 @@ RUN pip install pipenv \
 COPY entrypoint.sh /app/
 RUN chmod +x entrypoint.sh
 
-COPY main.py /app/
+COPY src /app/
 
 CMD ./entrypoint.sh
