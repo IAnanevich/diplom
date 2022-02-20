@@ -7,8 +7,8 @@
         "eslint:recommended",
         "plugin:react/recommended",
         "plugin:@typescript-eslint/recommended",
+        "plugin:prettier/recommended",
 
-        "some-other-config-you-use",
         "prettier"
     ],
     "parser": "@typescript-eslint/parser",
@@ -24,5 +24,8 @@
         "@typescript-eslint"
     ],
     "rules": {
+        "react/react-in-jsx-scope": "off",
+        "sort-destructure-keys/sort-destructure-keys": 1,
+        "sort-vars": 1
     }
 }
