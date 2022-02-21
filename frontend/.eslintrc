@@ -21,11 +21,12 @@
     },
     "plugins": [
         "react",
-        "@typescript-eslint"
+        "@typescript-eslint",
+        "prettier"
     ],
     "rules": {
         "react/react-in-jsx-scope": "off",
-        "sort-destructure-keys/sort-destructure-keys": 1,
-        "sort-vars": 1
+        "sort-vars": 1,
+        "prettier/prettier": 1
     }
 }
