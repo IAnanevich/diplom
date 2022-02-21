@@ -14,9 +14,9 @@ async def websocket_endpoint(websocket: WebSocket):
     print('Accepting client connection...')
     x = 0
     await websocket.accept()
-    await websocket.receive_text()
     while True:
         try:
+            await websocket.receive_text()
             resp = {'x': x, 'y': calculate_sin(x)}
             await websocket.send_json(resp)
             x += 1
