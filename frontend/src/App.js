@@ -1,14 +1,26 @@
 import './App.css';
 import * as grafar from 'grafar';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 
 function App() {
   const [ws] = useState(new WebSocket('ws://localhost:8000/ws'));
   const grafarPanelRef = useRef(null);
-  //const [grafarPanel] = useState(grafar.panel(document.getElementById('grafar')));
-  const [grafarPanel] = useState(grafar.panel(grafarPanelRef?.current));
-  const [x] = useState(grafar.range(-1, 1, 100).select());
-  const [y] = useState(grafar.map(x, (x) => Math.sin(x)));
+  const [grafarPanel, setGrafarPanel] = useState(null); // todo useMemo maybe?
+  const [inputValueB, setInputValueB] = useState('');
+  const [inputValueA, setInputValueA] = useState('');
+
+  console.log('render');
+
+  useEffect(() => {
+    if (grafarPanelRef.current.children.length === 0) {
+      setGrafarPanel(grafar.panel(grafarPanelRef.current));
+    }
+  }, []);
+
+  const [x] = useState(grafar.seq(-1, 1, 20).select());
+  const [a] = useState(grafar.set([1]).select());
+  const [b] = useState(grafar.set([0]).select());
+  const [y] = useState(grafar.map([x, a, b], (x, a, b) => a * Math.sin(x) + b));
   /*  function sendMessage(event) {
     var input = document.getElementById('messageText');
     ws.send(input.value);
@@ -16,37 +28,63 @@ function App() {
     event.preventDefault();
   }*/
 
-  console.log('grafarPanel: ', grafarPanel);
-
-  useEffect(() => {
-    ws.onmessage = function (event) {
-      const messages = document.getElementById('messages');
-      const message = document.createElement('li');
-      const content = document.createTextNode(event.data);
-      message.appendChild(content);
-      messages?.appendChild(message);
-    };
-  }, []);
-
   useEffect(() => {
     if (grafarPanel) {
+      console.log('setAxes');
       grafarPanel.setAxes(['x', 'y']);
     }
   }, [grafarPanel]);
 
   useEffect(() => {
-    grafar.pin([x, y], grafarPanel);
-  }, [x, y]);
+    if (grafarPanel) {
+      console.log('pin grafarPanel');
+      grafar.pin([x, y], grafarPanel);
+    }
+  }, [x, y, grafarPanel]);
 
   return (
-    <div className='App'>
+    <div className='App' id={'App'}>
       <h1>WebSocket Chat</h1>
+      <div style={{ width: 400, height: 300 }} ref={grafarPanelRef} />
       {/*      <form>
         <input type='text' id='messageText' autoComplete='off' />
         <button onClick={sendMessage}>Send</button>
       </form>*/}
       {/*<ul id='messages'></ul>*/}
-      <div ref={grafarPanelRef}></div>
+      <div>
+        <input
+          value={inputValueA}
+          onChange={(event) => {
+            setInputValueA(event.target.value);
+          }}
+        />
+        <button
+          onClick={() => {
+            //setX(grafar.range(-inputValue, +inputValue, 100).select());
+            //setY(grafar.map(x, (x) => Math.sin(x)));
+            grafar.set([inputValueA]).into(a);
+            setInputValueA('');
+          }}
+        >
+          {'set a'}
+        </button>
+        <input
+          value={inputValueB}
+          onChange={(event) => {
+            setInputValueB(event.target.value);
+          }}
+        />
+        <button
+          onClick={() => {
+            //setX(grafar.range(-inputValue, +inputValue, 100).select());
+            //setY(grafar.map(x, (x) => Math.sin(x)));
+            grafar.set([inputValueB]).into(b);
+            setInputValueB('');
+          }}
+        >
+          {'set b'}
+        </button>
+      </div>
     </div>
   );
 }
