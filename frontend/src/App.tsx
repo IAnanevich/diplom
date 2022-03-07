@@ -1,12 +1,13 @@
 import './App.css';
 import { useEffect, useState } from 'react';
+import Plot from 'react-plotly.js';
 
 function App() {
   const [ws] = useState(new WebSocket('ws://localhost:8000/ws'));
   const [inputValueB, setInputValueB] = useState('');
   const [inputValueA, setInputValueA] = useState('');
-  const [pointsXArray] = useState([]);
-  const [pointsYArray] = useState([]);
+  const [pointsXArray, setPointsXArray] = useState<number[]>([]);
+  const [pointsYArray, setPointsYArray] = useState<number[]>([]);
 
   console.log('render');
 
@@ -27,10 +28,14 @@ function App() {
     ws.onmessage = (event) => {
       const dataObj = JSON.parse(event.data);
 
-      console.log('Data: ', dataObj);
-      if (dataObj.x < 20 && dataObj.x > -20) {
-        //pointsXArray.push(dataObj.x);
-        //pointsYArray.push(dataObj.y);
+      console.log('Data x: ', dataObj.x);
+      if (dataObj.x < 50) {
+        setPointsXArray((prevState) => {
+          return [...prevState, dataObj.x];
+        });
+        setPointsYArray((prevState) => {
+          return [...prevState, dataObj.y];
+        });
       } else {
         ws.close(1000);
       }
@@ -39,7 +44,19 @@ function App() {
 
   return (
     <div className='App' id={'App'}>
-      <h1>WebSocket Chat</h1>
+      <h1>{'WebSocket Sinus'}</h1>
+      <Plot
+        data={[
+          {
+            x: pointsXArray,
+            y: pointsYArray,
+            type: 'scatter',
+            mode: 'lines+markers',
+            marker: { color: 'red' },
+          },
+        ]}
+        layout={{ width: 600, height: 400, title: 'Sinus Plot' }}
+      />
       <div>
         <input
           value={inputValueA}
@@ -55,10 +72,6 @@ function App() {
         />
         <button
           onClick={() => {
-            //setX(grafar.range(-inputValue, +inputValue, 100).select());
-            //setY(grafar.map(x, (x) => Math.sin(x)));
-            //grafar.set([inputValueA]).into(a);
-            //setInputValueA('');
             if (inputValueA && inputValueB !== '') {
               const sendingDataObj = { a: +inputValueA, b: +inputValueB };
 
