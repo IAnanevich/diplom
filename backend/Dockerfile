@@ -1,10 +1,10 @@
-FROM python:3.9
-ENV PYTHONUNBUFFERED 1
-WORKDIR /app
-COPY Pipfile* /app/
+FROM continuumio/miniconda3
 
-RUN pip install pipenv \
-    && pipenv install --deploy --system --ignore-pipfile
+WORKDIR /app
+COPY environment.yml /app/
+
+RUN conda env create -f environment.yml
+SHELL ["conda", "run", "-n", "diplom", "/bin/bash", "-c"]
 
 COPY entrypoint.sh /app/
 RUN chmod +x entrypoint.sh
