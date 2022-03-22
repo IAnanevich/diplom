@@ -1,0 +1,9 @@
+name: diplom
+channels:
+  - conda-forge
+dependencies:
+  - pip
+  - uvicorn-standard
+  - fastapi
+  - numpy
+  - pandas
