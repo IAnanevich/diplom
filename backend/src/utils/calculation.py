@@ -1,19 +1,31 @@
-from src.utils.services import ConditionEvaluation, VariableEvaluation
+from math import exp
 
 from src.utils.constants import *
 
 
-class MainCalculation(ConditionEvaluation, VariableEvaluation):
+class Calculation:
 
-    # TODO: add conditions calculation
-    def calculation(self, dt, t, fl):
-        for i in range(1, N - 1):
-            self.te2[i] = self.te1[i] + dt / self.calc_electronic_heat_capacity(self.te1[i]) * (
-                        Ke * (self.te1[i + 1] - 2 * self.te1[i] + self.te1[i - 1]) / dx / dx - g * (
-                            self.te1[i] - self.tl1[i]) + self.calc_power_source(self.x, self.x[i], t, fl))
+    @staticmethod
+    def calculation_1():
 
-            self.tl2[i] = self.tl1[i] + dt / Cl * (
-                        Kl * (self.tl1[i + 1] - 2 * self.tl1[i] + self.tl1[i - 1]) / dx / dx + g * (
-                            self.te1[i] - self.tl1[i]))
+        for i in range(0, Nx + 1):
+            for j in range(0, Ny + 1):
+                for k in range(0, Nz + 1):
+                    F[i, j, k] = exp(dx**2 * (Nx / 2 - i) * (i - Nx / 2)) * exp(
+                        dy**2 * (Ny / 2 - j) * (j - Ny / 2)
+                    ) * exp(-dz * k) * dt * ntime * exp(-beta * dt * ntime)
 
-            yield self.te2, self.tl2
+        for i in range(1, Nx):
+            for j in range(1, Ny):
+                for k in range(1, Nz):
+                    tmpe1[i, j, k] = tmpe0[i, j, k] * dt * a1 * (
+                        (tmpe0[i+1, j, k] + tmpe0[i-1, j, k] - 2 * tmpe0[i, j, k]) / dx**2 +
+                        (tmpe0[i, j+1, k] + tmpe0[i, j-1, k] - 2 * tmpe0[i, j, k]) / dy**2 + a2 *
+                        (tmpe0[i, j, k+1] + tmpe0[i, j, k-1] - 2 * tmpe0[i, j, k]) / dz**2
+                    ) + dt + b1 * F[i, j, k] + dt * cc1 * (tmpi0[i, j, k] - tmpe0[i, j, k])
+
+                    tmpi1[i, j, k] = tmpi0[i, j, k] + dt * cc2 * (tmpe0[i, j, k] - tmpi0[i, j, k])
+
+    @staticmethod
+    def calculation_2():
+        pass
