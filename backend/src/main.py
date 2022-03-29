@@ -29,7 +29,7 @@ async def websocket_endpoint(websocket: WebSocket):
                 result_sin.append(calculate_sin(x, a, b, c, y, d))
                 result_y.append(y)
             resp = {'x': x, 'y': result_y, 'z': result_sin}
-            await websocket.send_json(data=resp, mode='text')
+            await websocket.send_json(data=resp, mode='binary')
 
         await websocket.close()
     except Exception as e:
