@@ -1,6 +1,7 @@
 import './App.css';
 import { useEffect, useState } from 'react';
 import Plot from 'react-plotly.js';
+import { DataInput } from './components/common/DataInput';
 
 function App() {
   const [ws] = useState(new WebSocket('ws://localhost:8000/ws'));
@@ -77,45 +78,37 @@ function App() {
             //marker: { color: 'red' },
           },
         ]}
-        layout={{ width: 600, height: 400, title: 'Sinus Plot' }}
+        layout={{ width: 800, height: 500, title: 'Sinus Plot' }}
       />
       <div style={{ display: 'flex', flexDirection: 'column', width: 200, alignItems: 'center' }}>
-        <div style={{ marginBottom: 10, display: 'flex', flexDirection: 'row' }}>
-          <p style={{ display: 'flex', margin: 0, marginRight: 10 }}>{'A:'}</p>
-          <input
-            value={inputValueA}
-            onChange={(event) => {
-              setInputValueA(event.target.value);
-            }}
-          />
-        </div>
-        <div style={{ marginBottom: 10, display: 'flex', flexDirection: 'row' }}>
-          <p style={{ display: 'flex', margin: 0, marginRight: 10 }}>{'B:'}</p>
-          <input
-            value={inputValueB}
-            onChange={(event) => {
-              setInputValueB(event.target.value);
-            }}
-          />
-        </div>
-        <div style={{ marginBottom: 10, display: 'flex', flexDirection: 'row' }}>
-          <p style={{ display: 'flex', margin: 0, marginRight: 10 }}>{'C:'}</p>
-          <input
-            value={inputValueC}
-            onChange={(event) => {
-              setInputValueC(event.target.value);
-            }}
-          />
-        </div>
-        <div style={{ marginBottom: 10, display: 'flex', flexDirection: 'row' }}>
-          <p style={{ display: 'flex', margin: 0, marginRight: 10 }}>{'D:'}</p>
-          <input
-            value={inputValueD}
-            onChange={(event) => {
-              setInputValueD(event.target.value);
-            }}
-          />
-        </div>
+        <DataInput
+          value={inputValueA}
+          onChange={(event) => {
+            setInputValueA(event.target.value);
+          }}
+          label={'A:'}
+        />
+        <DataInput
+          value={inputValueB}
+          onChange={(event) => {
+            setInputValueB(event.target.value);
+          }}
+          label={'B:'}
+        />
+        <DataInput
+          value={inputValueC}
+          onChange={(event) => {
+            setInputValueC(event.target.value);
+          }}
+          label={'C:'}
+        />
+        <DataInput
+          value={inputValueD}
+          onChange={(event) => {
+            setInputValueD(event.target.value);
+          }}
+          label={'D:'}
+        />
         <button
           onClick={() => {
             if (inputValueA && inputValueB !== '') {
