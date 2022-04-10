@@ -12,6 +12,10 @@ function App() {
   const [pointsXArray, setPointsXArray] = useState<number[][]>([]);
   const [pointsYArray, setPointsYArray] = useState<number[]>([]);
   const [pointsZArray, setPointsZArray] = useState<number[]>([]);
+  const [pointsXArray3d, setPointsXArray3d] = useState<number[][]>([]);
+  const [pointsYArray3d, setPointsYArray3d] = useState<number[][]>([]);
+
+  const [counter, setCounter] = useState<number>(0);
 
   console.log('render');
 
@@ -30,31 +34,34 @@ function App() {
     };
 
     ws.onmessage = (event) => {
-      /*      const dataObj = JSON.parse(event.data);
-
-      console.log('Data x: ', dataObj.x);
-      if (dataObj.x < 500) {
-
-      } else {
-        ws.close(1000);
-      }*/
-
       event.data.text().then((response: any) => {
         const dataObj = JSON.parse(response);
 
         console.log('dataObj: ', dataObj);
 
         setPointsXArray((prevState) => {
+          return [...prevState, dataObj.x];
+        });
+
+        setPointsXArray3d((prevState) => {
           const array = new Array(50);
           return [...prevState, array.fill(dataObj.x)];
         });
 
         setPointsYArray((prevState) => {
+          return [...prevState, dataObj.y[dataObj.x]];
+        });
+
+        setPointsYArray3d((prevState) => {
           return [...prevState, dataObj.y];
         });
 
         setPointsZArray((prevState) => {
           return [...prevState, dataObj.z];
+        });
+
+        setCounter((prevCounter) => {
+          return prevCounter + 1;
         });
       });
     };
@@ -73,9 +80,19 @@ function App() {
             x: pointsXArray,
             y: pointsYArray,
             z: pointsZArray,
+            type: 'contour',
+          },
+        ]}
+        layout={{ width: 800, height: 500, title: 'Sinus Plot' }}
+      />
+
+      <Plot
+        data={[
+          {
+            x: pointsXArray3d,
+            y: pointsYArray3d,
+            z: pointsZArray,
             type: 'surface',
-            //mode: 'lines+markers',
-            //marker: { color: 'red' },
           },
         ]}
         layout={{ width: 800, height: 500, title: 'Sinus Plot' }}
@@ -130,6 +147,16 @@ function App() {
           }}
         >
           {'Send a & b'}
+        </button>
+        <button
+          onClick={() => {
+            console.log('x: ', pointsXArray);
+            console.log('y: ', pointsYArray);
+            console.log('z: ', pointsZArray);
+            console.log('counter: ', counter);
+          }}
+        >
+          {'log states'}
         </button>
       </div>
     </div>
