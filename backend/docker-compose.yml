@@ -2,9 +2,9 @@ version: '3.7'
 services:
   web:
     build:
-      context: backend
+      context: .
       dockerfile: Dockerfile
     volumes:
-      - ./backend/:/app
+      - ./:/app
     ports:
       - "8000:8000"
