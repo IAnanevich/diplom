@@ -10,8 +10,8 @@ from src.utils.constants import tmpe2, tmpi2, tmpe1, tmpi1, tmpe0, tmpi0
 app = FastAPI()
 
 
-def calculate_sin(x, a, b):
-    return math.sin(a * x + b)
+def calculate_sin(x, a, b, c, y, d):
+    return math.sin(a * x + b) + math.sin(c * y + d)
 
 
 @app.websocket("/ws")
