@@ -10,5 +10,4 @@ COPY entrypoint.sh /app/
 RUN chmod +x entrypoint.sh
 
 COPY src /app/
-
 CMD ./entrypoint.sh
