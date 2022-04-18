@@ -31,7 +31,7 @@ async def websocket_endpoint(websocket: WebSocket):
             tmpi1[:] = tmpi2[:]
             Calculation.calculation_2(i * dt)
 
-            resp = {'x': i * dt, 'y1': tmpi2[nx//2, ny//2, 2], 'y2': tmpe2[nx // 2, ny // 2]}
+            resp = {'x': i * dt, 'y1': tmpi2[nx//2, ny//2, 2], 'y2': tmpe2[nx // 2, ny // 2, 2]}
             await websocket.send_json(data=resp, mode='text')
             # time.sleep(0.5)
             if i == 20000:

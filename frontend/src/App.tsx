@@ -11,13 +11,7 @@ function App() {
   const [inputValueD, setInputValueD] = useState('');
   const [pointsXArray, setPointsXArray] = useState<any>([]);
   const [pointsYArray, setPointsYArray] = useState<any>([]);
-  const [pointsZArray, setPointsZArray] = useState<any>([]);
-  const [pointsXArray3d, setPointsXArray3d] = useState<number[][]>([]);
-  const [pointsYArray3d, setPointsYArray3d] = useState<number[][]>([]);
-
-  const [pointsXArrayTmp, setPointsXArrayTmp] = useState<any>([]);
-  const [pointsYArrayTmp, setPointsYArrayTmp] = useState<any>([]);
-  const [pointsZArrayTmp, setPointsZArrayTmp] = useState<any>([]);
+  const [pointsY2Array, setPointsY2Array] = useState<any>([]);
 
   const [counter, setCounter] = useState<number>(0);
 
@@ -38,25 +32,35 @@ function App() {
     };
 
     ws.onmessage = (event) => {
-      event.data.text().then((response: any) => {
-        const dataObj = JSON.parse(response);
+      const dataObj = JSON.parse(event.data);
 
+      if (pointsXArray < 1000) {
         console.log('dataObj: ', dataObj);
 
-        setPointsXArray((prevState) => {
+        setPointsXArray((prev) => {
+          return [...prev, dataObj.x];
+        });
+
+        setPointsYArray((prev) => {
+          return [...prev, dataObj.y1];
+        });
+
+        setPointsY2Array((prev) => {
+          return [...prev, dataObj.y2];
+        });
+      } else {
+        ws.close(1000);
+      }
+
+      /*        setPointsXArray((prevState) => {
           return [...prevState, dataObj.x];
         });
 
         setPointsXArray3d((prevState) => {
           const array = new Array(50);
           return [...prevState, array.fill(dataObj.x)];
-        });
-
-        /*        setPointsYArray((prevState) => {
-          return [...prevState, dataObj.y[dataObj.x]];
         });*/
-
-        setPointsYArray((prevState) => {
+      /*        setPointsYArray((prevState) => {
           return [...prevState, dataObj.y];
         });
 
@@ -66,8 +70,7 @@ function App() {
 
         setPointsZArray((prevState) => {
           return [...prevState, dataObj.z];
-        });
-      });
+        });*/
     };
   }, []);
 
@@ -81,6 +84,26 @@ function App() {
       <Plot
         data={[
           {
+            x: pointsXArray,
+            y: pointsYArray,
+            type: 'scatter',
+          },
+          {
+            x: pointsXArray,
+            y: pointsY2Array,
+            type: 'scatter',
+          },
+        ]}
+        layout={{
+          width: 800,
+          height: 500,
+          title: 'Sinus Plot',
+          grid: { rows: 2, columns: 1, pattern: 'independent' },
+        }}
+      />
+      {/*      <Plot
+        data={[
+          {
             x: pointsXArray3d,
             y: pointsYArray3d,
             z: pointsZArray,
@@ -88,8 +111,8 @@ function App() {
           },
         ]}
         layout={{ width: 800, height: 500, title: 'Sinus Plot' }}
-      />
-      <Plot
+      />*/}
+      {/*      <Plot
         data={[
           {
             x: pointsXArrayTmp,
@@ -99,7 +122,7 @@ function App() {
           },
         ]}
         layout={{ width: 800, height: 500, title: 'Sinus Plot' }}
-      />
+      />*/}
       <div style={{ display: 'flex', flexDirection: 'column', width: 200, alignItems: 'center' }}>
         <DataInput
           value={inputValueA}
@@ -151,20 +174,7 @@ function App() {
         >
           {'Send a & b'}
         </button>
-        <button
-          onClick={() => {
-            console.log('pointsXArray: ', pointsXArray);
-            console.log('pointsYArray: ', pointsYArray);
-            console.log('pointsZArray: ', pointsZArray);
 
-            console.log('pointsXArrayTmp: ', pointsXArrayTmp);
-            console.log('pointsYArrayTmp: ', pointsYArrayTmp);
-            console.log('pointsZArrayTmp: ', pointsZArrayTmp);
-            console.log('counter: ', counter);
-          }}
-        >
-          {'log states'}
-        </button>
         <button
           onClick={() => {
             setPointsXArrayTmp((prev) => {
