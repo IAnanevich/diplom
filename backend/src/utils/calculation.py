@@ -1,9 +1,4 @@
-# from math import exp
-
 from src.utils.constants import *
-# from conditions import *
-
-# import matplotlib.pyplot as plt
 
 
 class Calculation:
@@ -14,13 +9,13 @@ class Calculation:
             F[:, :, :] = fe * time * np.exp(-beta * time)
 
             tmpe1[1:nx, 1:ny, 1:nz] = tmpe0[1:nx, 1:ny, 1:nz] + dt * a1 * (
-                    (tmpe0[2:, 1:ny, 1:nz] + tmpe0[:nx - 1, 1:ny, 1:nz] - 2 * tmpe0[1:nx, 1:ny, 1:nz]) / dx ** 2 + \
-                    (tmpe0[1:nx, 2:, 1:nz] + tmpe0[1:nx, :ny - 1, 1:nz] - 2 * tmpe0[1:nx, 1:ny, 1:nz]) / dy ** 2 + a2 * \
+                    (tmpe0[2:, 1:ny, 1:nz] + tmpe0[:nx - 1, 1:ny, 1:nz] - 2 * tmpe0[1:nx, 1:ny, 1:nz]) / dx ** 2 +
+                    (tmpe0[1:nx, 2:, 1:nz] + tmpe0[1:nx, :ny - 1, 1:nz] - 2 * tmpe0[1:nx, 1:ny, 1:nz]) / dy ** 2 + a2 *
                     (tmpe0[1:nx, 1:ny, 2:] + tmpe0[1:nx, 1:ny, :nz - 1] - 2 * tmpe0[1:nx, 1:ny, 1:nz]) / dz ** 2
             ) + dt * b1 * F[1:nx, 1:ny, 1:nz] + dt * cc1 * (tmpi0[1:nx, 1:ny, 1:nz] - tmpe0[1:nx, 1:ny, 1:nz])
 
             tmpi1[1:nx, 1:ny, 1:nz] = tmpi0[1:nx, 1:ny, 1:nz] - dt * cc2 * (
-                        tmpi0[1:nx, 1:ny, 1:nz] - tmpe0[1:nx, 1:ny, 1:nz])
+                    tmpi0[1:nx, 1:ny, 1:nz] - tmpe0[1:nx, 1:ny, 1:nz])
 
             tmpe1[:, :, nz] = init_val
             tmpi1[:, :, nz] = init_val
@@ -45,18 +40,20 @@ class Calculation:
         F[:, :, :] = fe * time * np.exp(-beta * time)
 
         tmpe2[1:nx, 1:ny, 1:nz] = tmpe0[1:nx, 1:ny, 1:nz] * a1 * dt * (
-                    1 / a1 / dt - 2 / dx ** 2 - 2 / dy ** 2 - 2 * a2 / dz ** 2) + \
-                                  2 * dt * a1 * (
-                                          (tmpe1[2:, 1:ny, 1:nz] + tmpe1[:nx - 1, 1:ny, 1:nz]) / dx ** 2 + \
-                                          (tmpe1[1:nx, 2:, 1:nz] + tmpe1[1:nx, :ny - 1, 1:nz]) / dy ** 2 + a2 * \
-                                          (tmpe1[1:nx, 1:ny, 2:] + tmpe1[1:nx, 1:ny, :nz - 1]) / dz ** 2
-                                  ) + 2 * dt * b1 * F[1:nx, 1:ny, 1:nz] + 2 * dt * cc1 * (
-                                              tmpi1[1:nx, 1:ny, 1:nz] - tmpe1[1:nx, 1:ny, 1:nz])
+            1 / a1 / dt - 2 / dx ** 2 - 2 / dy ** 2 - 2 * a2 / dz ** 2
+        ) + 2 * dt * a1 * (
+            (tmpe1[2:, 1:ny, 1:nz] + tmpe1[:nx - 1, 1:ny, 1:nz]) / dx ** 2 +
+            (tmpe1[1:nx, 2:, 1:nz] + tmpe1[1:nx, :ny - 1, 1:nz]) / dy ** 2 + a2 *
+            (tmpe1[1:nx, 1:ny, 2:] + tmpe1[1:nx, 1:ny, :nz - 1]) / dz ** 2
+        ) + 2 * dt * b1 * F[1:nx, 1:ny, 1:nz] + 2 * dt * cc1 * (
+            tmpi1[1:nx, 1:ny, 1:nz] - tmpe1[1:nx, 1:ny, 1:nz]
+        )
 
         tmpe2[1:nx, 1:ny, 1:nz] /= a1 * dt * (1 / a1 / dt + 2 / dx ** 2 + 2 / dy ** 2 + 2 * a2 / dz ** 2)
 
         tmpi2[1:nx, 1:ny, 1:nz] = tmpi1[1:nx, 1:ny, 1:nz] - dt * cc2 * (
-                    tmpi1[1:nx, 1:ny, 1:nz] - tmpe1[1:nx, 1:ny, 1:nz])
+                tmpi1[1:nx, 1:ny, 1:nz] - tmpe1[1:nx, 1:ny, 1:nz]
+        )
 
         tmpe2[:, :, nz] = init_val
         tmpi2[:, :, nz] = init_val
