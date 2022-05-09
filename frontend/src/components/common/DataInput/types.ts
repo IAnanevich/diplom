@@ -1,7 +1,7 @@
-import { ChangeEventHandler } from 'react';
+import { ChangeEventHandler, ReactNode } from 'react';
 
 export type DataInputPropsType = {
-  label: string;
+  label: string | ReactNode;
   onChange: ChangeEventHandler<HTMLInputElement>;
   value: HTMLInputElement['value'];
 };

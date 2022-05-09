@@ -40,8 +40,8 @@
   "exclude": [
     "node_modules"
   ],
-  "extends": "./tsconfig.paths.json",
   "include": [
     "src"
-  ]
+  ],
+  "extends": "tsconfig.paths.json"
 }

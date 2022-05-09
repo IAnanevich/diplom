@@ -1,19 +1,30 @@
 import './App.css';
 import { useEffect, useState } from 'react';
-import Plot from 'react-plotly.js';
-import { DataInput } from './components/common/DataInput';
+import { Window } from '../src/components/common/Window';
+import { COLORS } from './constants/colors';
+import { ParamsInputsWindow } from '../src/components/ui/ParamsInputsWindow';
+import { CalculatingProgressWindow } from '../src/components/ui/CalculatingProgressWindow';
+import { ControlButton } from '../src/components/common/ControlButton';
+import { EMPTY_STRING } from '../src/constants/common';
+import { Plots } from '../src/components/ui/Plots';
+import styled from 'styled-components';
+
+const WindowsContainer = styled.div``;
+
+const WindowsContainerRow = styled.div`
+  margin-bottom: 10px;
+`;
 
 function App() {
   const [ws] = useState(new WebSocket('ws://localhost:8000/ws'));
-  const [inputValueB, setInputValueB] = useState('');
-  const [inputValueA, setInputValueA] = useState('');
-  const [inputValueC, setInputValueC] = useState('');
-  const [inputValueD, setInputValueD] = useState('');
+  const [absCoefficientValue, setAbsCoefficientValue] = useState('1');
+  const [intensityValue, setIntensityValue] = useState('1');
+  const [pulseDurationValue, setPulseDurationValue] = useState('1');
+  const [beamRadiusValue, setBeamRadiusValue] = useState('1');
   const [pointsXArray, setPointsXArray] = useState<any>([]);
   const [pointsYArray, setPointsYArray] = useState<any>([]);
-  const [pointsY2Array, setPointsY2Array] = useState<any>([]);
-
-  const [counter, setCounter] = useState<number>(0);
+  const [pointsTempIArray, setPointsTempIArray] = useState<any>([]);
+  const [pointsTempEArray, setPointsTempEArray] = useState<any>([]);
 
   console.log('render');
 
@@ -32,45 +43,16 @@ function App() {
     };
 
     ws.onmessage = (event) => {
-      const dataObj = JSON.parse(event.data);
+      event.data.text().then((response: any) => {
+        const dataObj = JSON.parse(response);
 
-      if (pointsXArray < 1000) {
         console.log('dataObj: ', dataObj);
 
-        setPointsXArray((prev) => {
-          return [...prev, dataObj.x];
-        });
-
-        setPointsYArray((prev) => {
-          return [...prev, dataObj.y1];
-        });
-
-        setPointsY2Array((prev) => {
-          return [...prev, dataObj.y2];
-        });
-      } else {
-        ws.close(1000);
-      }
-
-      /*        setPointsXArray((prevState) => {
-          return [...prevState, dataObj.x];
-        });
-
-        setPointsXArray3d((prevState) => {
-          const array = new Array(50);
-          return [...prevState, array.fill(dataObj.x)];
-        });*/
-      /*        setPointsYArray((prevState) => {
-          return [...prevState, dataObj.y];
-        });
-
-        setPointsYArray3d((prevState) => {
-          return [...prevState, dataObj.y];
-        });
-
-        setPointsZArray((prevState) => {
-          return [...prevState, dataObj.z];
-        });*/
+        setPointsXArray(dataObj.x);
+        setPointsYArray(dataObj.y);
+        setPointsTempIArray(dataObj.temp_i);
+        setPointsTempEArray(dataObj.temp_e);
+      });
     };
   }, []);
 
@@ -78,135 +60,68 @@ function App() {
     <div
       className='App'
       id={'App'}
-      style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        backgroundColor: COLORS.GRAY_CFCFCF,
+        padding: '15px',
+      }}
     >
-      <h1>{'WebSocket Sinus'}</h1>
-      <Plot
-        data={[
-          {
-            x: pointsXArray,
-            y: pointsYArray,
-            type: 'scatter',
-          },
-          {
-            x: pointsXArray,
-            y: pointsY2Array,
-            type: 'scatter',
-          },
-        ]}
-        layout={{
-          width: 800,
-          height: 500,
-          title: 'Sinus Plot',
-          grid: { rows: 2, columns: 1, pattern: 'independent' },
-        }}
-      />
-      {/*      <Plot
-        data={[
-          {
-            x: pointsXArray3d,
-            y: pointsYArray3d,
-            z: pointsZArray,
-            type: 'surface',
-          },
-        ]}
-        layout={{ width: 800, height: 500, title: 'Sinus Plot' }}
-      />*/}
-      {/*      <Plot
-        data={[
-          {
-            x: pointsXArrayTmp,
-            y: pointsYArrayTmp,
-            z: pointsZArrayTmp,
-            type: 'contour',
-          },
-        ]}
-        layout={{ width: 800, height: 500, title: 'Sinus Plot' }}
-      />*/}
-      <div style={{ display: 'flex', flexDirection: 'column', width: 200, alignItems: 'center' }}>
-        <DataInput
-          value={inputValueA}
-          onChange={(event) => {
-            setInputValueA(event.target.value);
-          }}
-          label={'A:'}
-        />
-        <DataInput
-          value={inputValueB}
-          onChange={(event) => {
-            setInputValueB(event.target.value);
-          }}
-          label={'B:'}
-        />
-        <DataInput
-          value={inputValueC}
-          onChange={(event) => {
-            setInputValueC(event.target.value);
-          }}
-          label={'C:'}
-        />
-        <DataInput
-          value={inputValueD}
-          onChange={(event) => {
-            setInputValueD(event.target.value);
-          }}
-          label={'D:'}
-        />
-        <button
-          onClick={() => {
-            if (inputValueA && inputValueB !== '') {
-              const sendingDataObj = {
-                a: +inputValueA,
-                b: +inputValueB,
-                c: +inputValueC,
-                d: +inputValueD,
-                lim_x: 30,
-                lim_y: 30,
-              };
-              ws.send(JSON.stringify(sendingDataObj));
+      <h1>{'Simulation of the Interaction of Ultrashort Laser Pulses with Metals'}</h1>
 
-              setInputValueA('');
-              setInputValueB('');
-              setInputValueC('');
-              setInputValueD('');
-            }
-          }}
-        >
-          {'Send a & b'}
-        </button>
+      <div style={{ display: 'flex', flexDirection: 'row' }}>
+        <WindowsContainer style={{ marginRight: 15 }}>
+          <WindowsContainerRow>
+            <ParamsInputsWindow
+              absCoefficientValue={absCoefficientValue}
+              beamRadiusValue={beamRadiusValue}
+              intensityValue={intensityValue}
+              setAbsCoefficientValue={setAbsCoefficientValue}
+              setBeamRadiusValue={setBeamRadiusValue}
+              setIntensityValue={setIntensityValue}
+              pulseDurationValue={pulseDurationValue}
+              setPulseDurationValue={setPulseDurationValue}
+            />
+          </WindowsContainerRow>
+          <WindowsContainerRow>
+            <CalculatingProgressWindow timeValue={'1784'} stepValue={'200'} />
+          </WindowsContainerRow>
+          <WindowsContainerRow>
+            <Window title={'Controls'}>
+              {
+                <ControlButton
+                  onClick={() => {
+                    if (
+                      absCoefficientValue &&
+                      intensityValue &&
+                      pulseDurationValue &&
+                      beamRadiusValue !== EMPTY_STRING
+                    ) {
+                      const sendingDataObj = {
+                        a: +absCoefficientValue,
+                        b: +intensityValue,
+                        c: +pulseDurationValue,
+                        d: +beamRadiusValue,
+                        lim_x: 30,
+                        lim_y: 30,
+                      };
 
-        <button
-          onClick={() => {
-            setPointsXArrayTmp((prev) => {
-              console.log('pointsXArray[counter]: ', pointsXArray[counter]);
-
-              if (counter !== 0) {
-                return [...prev, pointsXArray[counter]];
+                      ws.send(JSON.stringify(sendingDataObj));
+                    }
+                  }}
+                  value={'Send message'}
+                />
               }
-              return [pointsXArray[counter]];
-            });
-
-            setPointsYArrayTmp((prev) => {
-              if (counter !== 0) {
-                return [...prev, pointsYArray[counter]];
-              }
-              return [pointsYArray[counter]];
-            });
-
-            setPointsZArrayTmp((prev) => {
-              if (counter !== 0) {
-                return [...prev, pointsZArray[counter]];
-              }
-              return [pointsZArray[counter]];
-            });
-
-            setCounter((prevCounter) => {
-              return prevCounter + 1;
-            });
-          }}
-        >
-          {'step'}
-        </button>
+            </Window>
+          </WindowsContainerRow>
+        </WindowsContainer>
+        <Plots
+          pointsTempEArray={pointsTempEArray}
+          pointsTempIArray={pointsTempIArray}
+          pointsXArray={pointsXArray}
+          pointsYArray={pointsYArray}
+        />
       </div>
     </div>
   );

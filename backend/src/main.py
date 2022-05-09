@@ -1,7 +1,8 @@
 from fastapi import FastAPI, WebSocket
 
-from src.utils.constants import tmpe2, tmpi2, tmpe1, tmpi1, tmpe0, tmpi0
+from src.utils.constants import tmpe2, tmpi2, tmpe1, tmpi1, tmpe0, tmpi0, dx, dy
 from src.utils.calculation import dt, Calculation, nx, ny
+import numpy as np
 
 app = FastAPI()
 
@@ -28,6 +29,8 @@ async def websocket_endpoint(websocket: WebSocket):
                 # 'y2': tmpe2[nx // 2, ny // 2, 2],
                 'temp_e': tmpe2[:, ny // 2, :].tolist(),
                 'temp_i': tmpi2[:, ny // 2, :].tolist(),
+                'x': np.linspace(0,nx*dx,nx + 1).tolist(),
+                'y': np.linspace(0,ny*dy,ny + 1).tolist(),
             }
 
             await websocket.send_json(data=resp, mode='binary')
