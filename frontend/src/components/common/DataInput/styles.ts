@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import { COLORS } from '../../../constants/colors';
+import { DataInputFieldPropsType } from './types';
 
 export const DataInputContainer = styled.div`
   display: flex;
@@ -9,15 +10,15 @@ export const DataInputContainer = styled.div`
 `;
 
 export const DataInputLabel = styled.p`
-  display: flex;
   margin: 0 10px 0 0;
 `;
 
-export const DataInputField = styled.input`
+export const DataInputField = styled.input<DataInputFieldPropsType>`
   background-color: ${COLORS.WHITE};
   border-radius: 3px;
-  border: ${COLORS.GRAY_EBEBEB} inset 2px;
+  border: ${(props) => (props.isCorrect ? COLORS.GRAY_EBEBEB : 'red')} inset 2px;
   outline: none;
+  height: 18px;
 
   &:focus {
     background-color: ${COLORS.GRAY_EBEBEB};

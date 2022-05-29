@@ -26,7 +26,25 @@ function App() {
   const [pointsTempIArray, setPointsTempIArray] = useState<any>([]);
   const [pointsTempEArray, setPointsTempEArray] = useState<any>([]);
 
-  console.log('render');
+  const sendMessageAction = () => {
+    if (
+      absCoefficientValue &&
+      intensityValue &&
+      pulseDurationValue &&
+      beamRadiusValue !== EMPTY_STRING
+    ) {
+      const sendingDataObj = {
+        a: +absCoefficientValue,
+        b: +intensityValue,
+        c: +pulseDurationValue,
+        d: +beamRadiusValue,
+        lim_x: 30,
+        lim_y: 30,
+      };
+
+      ws.send(JSON.stringify(sendingDataObj));
+    }
+  };
 
   useEffect(() => {
     ws.onopen = function () {
@@ -68,7 +86,7 @@ function App() {
         padding: '15px',
       }}
     >
-      <h1>{'Simulation of the Interaction of Ultrashort Laser Pulses with Metals'}</h1>
+      <h1>{'Моделирование взаимодействия сверхкоротких лазерных импульсов с металлами'}</h1>
 
       <div style={{ display: 'flex', flexDirection: 'row' }}>
         <WindowsContainer style={{ marginRight: 15 }}>
@@ -88,31 +106,8 @@ function App() {
             <CalculatingProgressWindow timeValue={'1784'} stepValue={'200'} />
           </WindowsContainerRow>
           <WindowsContainerRow>
-            <Window title={'Controls'}>
-              {
-                <ControlButton
-                  onClick={() => {
-                    if (
-                      absCoefficientValue &&
-                      intensityValue &&
-                      pulseDurationValue &&
-                      beamRadiusValue !== EMPTY_STRING
-                    ) {
-                      const sendingDataObj = {
-                        a: +absCoefficientValue,
-                        b: +intensityValue,
-                        c: +pulseDurationValue,
-                        d: +beamRadiusValue,
-                        lim_x: 30,
-                        lim_y: 30,
-                      };
-
-                      ws.send(JSON.stringify(sendingDataObj));
-                    }
-                  }}
-                  value={'Send message'}
-                />
-              }
+            <Window title={'Управление'}>
+              {<ControlButton onClick={sendMessageAction} value={'Отправить данные'} />}
             </Window>
           </WindowsContainerRow>
         </WindowsContainer>
