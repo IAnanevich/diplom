@@ -17,14 +17,14 @@ export const ParamsInputsWindow: FC<ParamsInputsWindowPropsType> = (props) => {
   } = props;
 
   return (
-    <Window title={'Parameters'}>
+    <Window title={'Параметры'}>
       <DataInputsContainer>
         <DataInput
           value={beamRadiusValue}
           onChange={(event) => {
             setBeamRadiusValue(event.target.value);
           }}
-          label={'Beam radius (cm): '}
+          label={'Радиус пучка (см): '}
         />
         <DataInput
           value={absCoefficientValue}
@@ -33,8 +33,8 @@ export const ParamsInputsWindow: FC<ParamsInputsWindowPropsType> = (props) => {
           }}
           label={
             <>
-              {'Absorption coefficient (cm'}
-              <sup>{'2'}</sup>
+              {'Коэффициент поглощения (см'}
+              <sup>{'-1'}</sup>
               {'): '}
             </>
           }
@@ -46,7 +46,7 @@ export const ParamsInputsWindow: FC<ParamsInputsWindowPropsType> = (props) => {
           }}
           label={
             <>
-              {'Intensity (watt/cm'}
+              {'Интенсивность (Вт/см'}
               <sup>{'2'}</sup>
               {'): '}
             </>
@@ -57,7 +57,7 @@ export const ParamsInputsWindow: FC<ParamsInputsWindowPropsType> = (props) => {
           onChange={(event) => {
             setPulseDurationValue(event.target.value);
           }}
-          label={'Pulse duration (sec): '}
+          label={'Длительность импульса (сек): '}
         />
       </DataInputsContainer>
     </Window>

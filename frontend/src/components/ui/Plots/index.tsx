@@ -6,41 +6,28 @@ export const Plots: FC<PlotsPropsType> = (props) => {
   const { pointsXArray, pointsYArray, pointsTempEArray, pointsTempIArray } = props;
 
   return (
-    <div>
-      <div style={{ display: 'flex', flexDirection: 'row' }}>
-        <Plot
-          data={[
-            {
-              x: pointsXArray,
-              y: pointsYArray,
-              z: pointsTempEArray,
-              type: 'contour',
-            },
-          ]}
-          layout={{ width: 500, height: 400, title: 'Electrons' }}
-        />
-        <Plot
-          data={[
-            {
-              x: pointsXArray,
-              y: pointsYArray,
-              z: pointsTempIArray,
-              type: 'contour',
-            },
-          ]}
-          layout={{ width: 500, height: 400, title: 'Lattice' }}
-        />
-      </div>
+    <div style={{ display: 'flex', flexDirection: 'row' }}>
       <Plot
         data={[
           {
             x: pointsXArray,
             y: pointsYArray,
             z: pointsTempEArray,
-            type: 'heatmap',
+            type: 'contour',
           },
         ]}
-        layout={{ width: 1000, height: 500, title: 'Electrons heatmap' }}
+        layout={{ width: 500, height: 400, title: 'Температура электронного газа' }}
+      />
+      <Plot
+        data={[
+          {
+            x: pointsXArray,
+            y: pointsYArray,
+            z: pointsTempIArray,
+            type: 'contour',
+          },
+        ]}
+        layout={{ width: 500, height: 400, title: 'Температура ионной решётки' }}
       />
     </div>
   );

@@ -35,6 +35,7 @@ async def websocket_endpoint(websocket: WebSocket):
             Calculation.calculation_2(i * dt, data=data)
 
             resp = {
+                'step': i,
                 't': i * dt,
                 'temp_e': tmpe2[:, ny // 2, :].tolist(),
                 'temp_i': tmpi2[:, ny // 2, :].tolist(),

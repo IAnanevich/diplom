@@ -7,13 +7,13 @@ export const CalculatingProgressWindow: FC<CalculatingProgressWindowPropsType> =
   const { stepValue, timeValue } = props;
 
   return (
-    <Window title={'Calculating progress'}>
+    <Window title={'Ход расчётов'}>
       <ParamContainer>
-        <ParamLabel>{'Step: '}</ParamLabel>
+        <ParamLabel>{'Шаг: '}</ParamLabel>
         <ParamValue>{stepValue}</ParamValue>
       </ParamContainer>
       <ParamContainer style={{ marginTop: 10 }}>
-        <ParamLabel>{'Time: '}</ParamLabel>
+        <ParamLabel>{'Время: '}</ParamLabel>
         <ParamValue>{timeValue}</ParamValue>
       </ParamContainer>
     </Window>
