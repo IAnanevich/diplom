@@ -1,6 +1,7 @@
+import numpy as np
 from fastapi import FastAPI, WebSocket
 
-from src.utils.constants import tmpe2, tmpi2, tmpe1, tmpi1, tmpe0, tmpi0
+from src.utils.constants import tmpe2, tmpi2, tmpe1, tmpi1, tmpe0, tmpi0, nz, dz
 from src.utils.calculation import dt, Calculation, nx, ny
 from src.utils.service import Validation
 
@@ -22,11 +23,6 @@ async def websocket_endpoint(websocket: WebSocket):
         i += 1
         try:
 
-            if stop_data := await websocket.receive_json():
-                if stop_data.get('stop'):
-                    await websocket.send(message='You stopped the calculations')
-                    await websocket.close()
-
             tmpe0[:] = tmpe1[:]
             tmpe1[:] = tmpe2[:]
 
@@ -37,10 +33,18 @@ async def websocket_endpoint(websocket: WebSocket):
             resp = {
                 'step': i,
                 't': i * dt,
+                # for 2d
                 'temp_e': tmpe2[:, ny // 2, :].tolist(),
                 'temp_i': tmpi2[:, ny // 2, :].tolist(),
+                # for 1d (ion) (time)
                 'y1_time': tmpi2[nx // 2, ny // 2, 2],
+                # for 1d (electrons) (time)
                 'y2_time': tmpe2[nx // 2, ny // 2, 2],
+                # for 1d (ion) (coords)
+                'y1_coords': tmpi2[nx // 2, ny // 2].tolist(),
+                # for 1d (electrons) (coords)
+                'y2_coords': tmpe2[nx // 2, ny // 2].tolist(),
+                'z': np.linspace(0, nz * dz, nz).tolist()
             }
 
             await websocket.send_json(data=resp, mode='binary')
@@ -50,3 +54,8 @@ async def websocket_endpoint(websocket: WebSocket):
         except Exception as e:
             print('error:', e)
             break
+
+
+@app.get('/')
+def hello_world():
+    return 'Hello World!'
