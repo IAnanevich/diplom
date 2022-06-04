@@ -21,8 +21,10 @@ function App() {
   const [intensityValue, setIntensityValue] = useState('1');
   const [pulseDurationValue, setPulseDurationValue] = useState('1');
   const [beamRadiusValue, setBeamRadiusValue] = useState('1');
-  const [pointsXArray, setPointsXArray] = useState<any>([]);
-  const [pointsYArray, setPointsYArray] = useState<any>([]);
+  const [timeValue, setTimeValue] = useState('0');
+  const [stepValue, setStepValue] = useState('0');
+  const [pointsYiArray, setPointsYiArray] = useState<any>([]);
+  const [pointsYeArray, setPointsYeArray] = useState<any>([]);
   const [pointsTempIArray, setPointsTempIArray] = useState<any>([]);
   const [pointsTempEArray, setPointsTempEArray] = useState<any>([]);
 
@@ -34,12 +36,10 @@ function App() {
       beamRadiusValue !== EMPTY_STRING
     ) {
       const sendingDataObj = {
-        a: +absCoefficientValue,
-        b: +intensityValue,
-        c: +pulseDurationValue,
-        d: +beamRadiusValue,
-        lim_x: 30,
-        lim_y: 30,
+        kabs: +absCoefficientValue,
+        P0: +intensityValue,
+        tp: +pulseDurationValue,
+        r0: +beamRadiusValue,
       };
 
       ws.send(JSON.stringify(sendingDataObj));
@@ -66,10 +66,12 @@ function App() {
 
         console.log('dataObj: ', dataObj);
 
-        setPointsXArray(dataObj.x);
-        setPointsYArray(dataObj.y);
+        setPointsYeArray(dataObj.y1_time);
+        setPointsYiArray(dataObj.y2_time);
         setPointsTempIArray(dataObj.temp_i);
         setPointsTempEArray(dataObj.temp_e);
+        setStepValue(dataObj.step);
+        setTimeValue(dataObj.t);
       });
     };
   }, []);
@@ -103,7 +105,7 @@ function App() {
             />
           </WindowsContainerRow>
           <WindowsContainerRow>
-            <CalculatingProgressWindow timeValue={'1784'} stepValue={'200'} />
+            <CalculatingProgressWindow timeValue={timeValue} stepValue={stepValue} />
           </WindowsContainerRow>
           <WindowsContainerRow>
             <Window title={'Управление'}>
