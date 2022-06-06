@@ -25,6 +25,12 @@ export const ParamsInputsWindow: FC<ParamsInputsWindowPropsType> = (props) => {
             setBeamRadiusValue(event.target.value);
           }}
           label={'Радиус пучка (см): '}
+          extraLabel={
+            <>
+              {'*10'}
+              <sup>{'-2'}</sup>
+            </>
+          }
         />
         <DataInput
           value={absCoefficientValue}
@@ -36,6 +42,12 @@ export const ParamsInputsWindow: FC<ParamsInputsWindowPropsType> = (props) => {
               {'Коэффициент поглощения (см'}
               <sup>{'-1'}</sup>
               {'): '}
+            </>
+          }
+          extraLabel={
+            <>
+              {'*10'}
+              <sup>{'5'}</sup>
             </>
           }
         />
@@ -51,6 +63,12 @@ export const ParamsInputsWindow: FC<ParamsInputsWindowPropsType> = (props) => {
               {'): '}
             </>
           }
+          extraLabel={
+            <>
+              {'*10'}
+              <sup>{'8'}</sup>
+            </>
+          }
         />
         <DataInput
           value={pulseDurationValue}
@@ -58,6 +76,12 @@ export const ParamsInputsWindow: FC<ParamsInputsWindowPropsType> = (props) => {
             setPulseDurationValue(event.target.value);
           }}
           label={'Длительность импульса (сек): '}
+          extraLabel={
+            <>
+              {'*10'}
+              <sup>{'-13'}</sup>
+            </>
+          }
         />
       </DataInputsContainer>
     </Window>
