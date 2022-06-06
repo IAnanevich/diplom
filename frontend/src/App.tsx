@@ -5,7 +5,7 @@ import { COLORS } from './constants/colors';
 import { ParamsInputsWindow } from '../src/components/ui/ParamsInputsWindow';
 import { CalculatingProgressWindow } from '../src/components/ui/CalculatingProgressWindow';
 import { ControlButton } from '../src/components/common/ControlButton';
-import { EMPTY_STRING } from '../src/constants/common';
+import { EMPTY_ARRAY, EMPTY_STRING } from '../src/constants/common';
 import { Plots } from '../src/components/ui/Plots';
 import styled from 'styled-components';
 
@@ -16,17 +16,21 @@ const WindowsContainerRow = styled.div`
 `;
 
 function App() {
-  const [ws] = useState(new WebSocket('ws://localhost:8000/ws'));
+  const [ws] = useState(new WebSocket('wss://diplom-backend-bsu.herokuapp.com/ws'));
   const [absCoefficientValue, setAbsCoefficientValue] = useState('1');
   const [intensityValue, setIntensityValue] = useState('1');
   const [pulseDurationValue, setPulseDurationValue] = useState('1');
   const [beamRadiusValue, setBeamRadiusValue] = useState('1');
   const [timeValue, setTimeValue] = useState('0');
+  const [timeArray, setTimeArray] = useState<any>(EMPTY_ARRAY);
   const [stepValue, setStepValue] = useState('0');
-  const [pointsYiArray, setPointsYiArray] = useState<any>([]);
-  const [pointsYeArray, setPointsYeArray] = useState<any>([]);
-  const [pointsTempIArray, setPointsTempIArray] = useState<any>([]);
-  const [pointsTempEArray, setPointsTempEArray] = useState<any>([]);
+  const [pointsY2TimeArray, setPointsY2TimeArray] = useState<any>(EMPTY_ARRAY);
+  const [pointsY1TimeArray, setPointsY1TimeArray] = useState<any>(EMPTY_ARRAY);
+  const [pointsYi2Array, setPointsYi2Array] = useState<any>(EMPTY_ARRAY);
+  const [pointsYe2Array, setPointsYe2Array] = useState<any>(EMPTY_ARRAY);
+  const [pointsZArray, setPointsZArray] = useState<any>(EMPTY_ARRAY);
+  const [pointsTempIArray, setPointsTempIArray] = useState<any>(EMPTY_ARRAY);
+  const [pointsTempEArray, setPointsTempEArray] = useState<any>(EMPTY_ARRAY);
 
   const sendMessageAction = () => {
     if (
@@ -64,14 +68,22 @@ function App() {
       event.data.text().then((response: any) => {
         const dataObj = JSON.parse(response);
 
-        console.log('dataObj: ', dataObj);
-
-        setPointsYeArray(dataObj.y1_time);
-        setPointsYiArray(dataObj.y2_time);
+        setPointsY1TimeArray((prevState) => {
+          return [...prevState, dataObj.y1_time];
+        });
+        setPointsY2TimeArray((prevState) => {
+          return [...prevState, dataObj.y2_time];
+        });
         setPointsTempIArray(dataObj.temp_i);
         setPointsTempEArray(dataObj.temp_e);
         setStepValue(dataObj.step);
+        setTimeArray((prevState) => {
+          return [...prevState, dataObj.t];
+        });
         setTimeValue(dataObj.t);
+        setPointsYi2Array(dataObj.y1_coords);
+        setPointsYe2Array(dataObj.y2_coords);
+        setPointsZArray(dataObj.z);
       });
     };
   }, []);
@@ -116,8 +128,12 @@ function App() {
         <Plots
           pointsTempEArray={pointsTempEArray}
           pointsTempIArray={pointsTempIArray}
-          pointsXArray={pointsXArray}
-          pointsYArray={pointsYArray}
+          pointsY1TimeArray={pointsY1TimeArray}
+          pointsY2TimeArray={pointsY2TimeArray}
+          pointsYi2Array={pointsYi2Array}
+          pointsYe2Array={pointsYe2Array}
+          pointsZArray={pointsZArray}
+          time={timeArray}
         />
       </div>
     </div>
