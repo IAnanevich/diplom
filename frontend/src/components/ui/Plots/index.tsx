@@ -26,7 +26,19 @@ export const Plots: FC<PlotsPropsType> = (props) => {
               type: 'contour',
             },
           ]}
-          layout={{ width: 500, height: 400, title: 'Температура электронного газа' }}
+          layout={{
+            width: 500,
+            height: 400,
+            title: 'Температура электронного газа (K)',
+            xaxis: {
+              title: 'x ячейки',
+              titlefont: { size: 12 },
+            },
+            yaxis: {
+              title: 'z ячейки',
+              titlefont: { size: 12 },
+            },
+          }}
         />
         <Plot
           data={[
@@ -37,7 +49,19 @@ export const Plots: FC<PlotsPropsType> = (props) => {
               type: 'contour',
             },
           ]}
-          layout={{ width: 500, height: 400, title: 'Температура ионной решётки' }}
+          layout={{
+            width: 500,
+            height: 400,
+            title: 'Температура ионной решётки (К)',
+            xaxis: {
+              title: 'x ячейки',
+              titlefont: { size: 12 },
+            },
+            yaxis: {
+              title: 'z ячейки',
+              titlefont: { size: 12 },
+            },
+          }}
         />
       </div>
       <div style={{ display: 'flex', flexDirection: 'row' }}>
@@ -47,17 +71,24 @@ export const Plots: FC<PlotsPropsType> = (props) => {
               x: pointsZArray,
               y: pointsYe2Array,
               type: 'scatter',
+              mode: 'lines',
             },
             {
               x: pointsZArray,
               y: pointsYi2Array,
               type: 'scatter',
+              mode: 'lines',
             },
           ]}
           layout={{
             width: 500,
             height: 400,
             title: 'Te, Ti',
+            xaxis: {
+              title: 'z (мкм)',
+              titlefont: { size: 12 },
+            },
+            showlegend: false,
           }}
         />
         <Plot
@@ -66,17 +97,24 @@ export const Plots: FC<PlotsPropsType> = (props) => {
               x: time,
               y: pointsY1TimeArray,
               type: 'scatter',
+              mode: 'lines',
             },
             {
               x: time,
               y: pointsY2TimeArray,
               type: 'scatter',
+              mode: 'lines',
             },
           ]}
           layout={{
             width: 500,
             height: 400,
             title: 'Te, Ti',
+            xaxis: {
+              title: 'время (фс)',
+              titlefont: { size: 12 },
+            },
+            showlegend: false,
           }}
         />
       </div>

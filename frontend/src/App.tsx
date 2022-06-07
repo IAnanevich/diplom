@@ -1,13 +1,12 @@
 import './App.css';
 import { useEffect, useState } from 'react';
-import { Window } from '../src/components/common/Window';
 import { COLORS } from './constants/colors';
 import { ParamsInputsWindow } from '../src/components/ui/ParamsInputsWindow';
 import { CalculatingProgressWindow } from '../src/components/ui/CalculatingProgressWindow';
-import { ControlButton } from '../src/components/common/ControlButton';
 import { EMPTY_ARRAY, EMPTY_STRING } from '../src/constants/common';
 import { Plots } from '../src/components/ui/Plots';
 import styled from 'styled-components';
+import { ControlsWindow } from '../src/components/ui/ControlsWindow';
 
 const WindowsContainer = styled.div``;
 
@@ -15,9 +14,11 @@ const WindowsContainerRow = styled.div`
   margin-bottom: 10px;
 `;
 
+let ws = new WebSocket('ws://localhost:8000/ws');
+
 function App() {
-  const [ws] = useState(new WebSocket('wss://diplom-backend-bsu.herokuapp.com/ws'));
-  const [absCoefficientValue, setAbsCoefficientValue] = useState('1');
+  const [isWsOpen, setIsWsOpen] = useState(false);
+  const [absCoefficientValue, setAbsCoefficientValue] = useState('5');
   const [intensityValue, setIntensityValue] = useState('1');
   const [pulseDurationValue, setPulseDurationValue] = useState('1');
   const [beamRadiusValue, setBeamRadiusValue] = useState('1');
@@ -32,41 +33,27 @@ function App() {
   const [pointsTempIArray, setPointsTempIArray] = useState<any>(EMPTY_ARRAY);
   const [pointsTempEArray, setPointsTempEArray] = useState<any>(EMPTY_ARRAY);
 
-  const sendMessageAction = () => {
-    if (
-      absCoefficientValue &&
-      intensityValue &&
-      pulseDurationValue &&
-      beamRadiusValue !== EMPTY_STRING
-    ) {
-      const sendingDataObj = {
-        kabs: +absCoefficientValue,
-        P0: +intensityValue,
-        tp: +pulseDurationValue,
-        r0: +beamRadiusValue,
-      };
-
-      ws.send(JSON.stringify(sendingDataObj));
-    }
-  };
-
-  useEffect(() => {
+  const addListnersToWs = () => {
     ws.onopen = function () {
       console.log('socket connection was opened');
+      setIsWsOpen(true);
     };
 
     ws.onclose = (event) => {
       console.log('socket connection was closed with code: ', event.code);
       console.log('reason: ', event.reason);
+      setIsWsOpen(false);
     };
 
-    ws.onerror = () => {
-      console.log('ERROR!');
+    ws.onerror = (ev) => {
+      console.log('ERROR ev!: ', ev);
     };
 
     ws.onmessage = (event) => {
       event.data.text().then((response: any) => {
         const dataObj = JSON.parse(response);
+
+        console.log('dataObj.y1_time: ', dataObj.y1_time);
 
         setPointsY1TimeArray((prevState) => {
           return [...prevState, dataObj.y1_time];
@@ -86,11 +73,46 @@ function App() {
         setPointsZArray(dataObj.z);
       });
     };
-  }, []);
+  };
+
+  const setParamsAction = () => {
+    if (
+      absCoefficientValue &&
+      intensityValue &&
+      pulseDurationValue &&
+      beamRadiusValue !== EMPTY_STRING
+    ) {
+      console.log('isWsOpen: ', isWsOpen);
+      if (!isWsOpen) {
+        ws = new WebSocket('ws://localhost:8000/ws');
+        addListnersToWs();
+      }
+
+      const sendingDataObj = {
+        kabs: +absCoefficientValue,
+        P0: +intensityValue,
+        tp: +pulseDurationValue,
+        r0: +beamRadiusValue,
+      };
+
+      ws.send(JSON.stringify(sendingDataObj));
+    }
+  };
+
+  const stopAction = () => {
+    if (isWsOpen) {
+      ws.close(1000, 'stop action');
+      setIsWsOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    addListnersToWs();
+  }, [ws]);
 
   return (
     <div
-      className='App'
+      className={'App'}
       id={'App'}
       style={{
         display: 'flex',
@@ -120,9 +142,7 @@ function App() {
             <CalculatingProgressWindow timeValue={timeValue} stepValue={stepValue} />
           </WindowsContainerRow>
           <WindowsContainerRow>
-            <Window title={'Управление'}>
-              {<ControlButton onClick={sendMessageAction} value={'Отправить данные'} />}
-            </Window>
+            <ControlsWindow stopAction={stopAction} setParamsAction={setParamsAction} />
           </WindowsContainerRow>
         </WindowsContainer>
         <Plots
