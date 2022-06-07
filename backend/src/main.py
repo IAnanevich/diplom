@@ -1,4 +1,5 @@
 import numpy as np
+import time
 from fastapi import FastAPI, WebSocket
 
 from src.utils.constants import tmpe2, tmpi2, tmpe1, tmpi1, tmpe0, tmpi0, nz, dz
@@ -20,7 +21,6 @@ async def websocket_endpoint(websocket: WebSocket):
 
     Calculation.calculation_1(time=i * dt, data=data)
     while True:
-        i += 1
         try:
 
             tmpe0[:] = tmpe1[:]
@@ -47,7 +47,12 @@ async def websocket_endpoint(websocket: WebSocket):
                 'z': np.linspace(0, nz * dz, nz).tolist()
             }
 
-            await websocket.send_json(data=resp, mode='binary')
+            if i %5 == 0:
+                time.sleep(0.05)
+
+                await websocket.send_json(data=resp, mode='binary')
+
+            i += 1
 
             if i == 200000000000:
                 await websocket.close()
