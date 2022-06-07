@@ -13,8 +13,8 @@ export const CalculatingProgressWindow: FC<CalculatingProgressWindowPropsType> =
         <ParamValue>{stepValue}</ParamValue>
       </ParamContainer>
       <ParamContainer style={{ marginTop: 10 }}>
-        <ParamLabel>{'Время: '}</ParamLabel>
-        <ParamValue>{timeValue}</ParamValue>
+        <ParamLabel>{'Время (фс): '}</ParamLabel>
+        <ParamValue>{Number(timeValue).toFixed(2)}</ParamValue>
       </ParamContainer>
     </Window>
   );

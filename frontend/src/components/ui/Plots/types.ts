@@ -1,6 +1,10 @@
 export type PlotsPropsType = {
   pointsTempEArray: any[];
   pointsTempIArray: any[];
-  pointsXArray: any[];
-  pointsYArray: any[];
+  pointsY1TimeArray: any[];
+  pointsY2TimeArray: any[];
+  pointsYi2Array: any[];
+  pointsYe2Array: any[];
+  pointsZArray: any[];
+  time: any[];
 };

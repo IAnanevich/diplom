@@ -11,6 +11,7 @@ export const DataInputContainer = styled.div`
 
 export const DataInputLabel = styled.p`
   margin: 0 10px 0 0;
+  width: 60%;
 `;
 
 export const DataInputField = styled.input<DataInputFieldPropsType>`
@@ -19,8 +20,14 @@ export const DataInputField = styled.input<DataInputFieldPropsType>`
   border: ${(props) => (props.isCorrect ? COLORS.GRAY_EBEBEB : 'red')} inset 2px;
   outline: none;
   height: 18px;
+  width: 20%;
 
   &:focus {
     background-color: ${COLORS.GRAY_EBEBEB};
   }
+`;
+
+export const DataInputExtraLabel = styled.p`
+  margin: 0 0 0 3px;
+  width: 15%;
 `;
