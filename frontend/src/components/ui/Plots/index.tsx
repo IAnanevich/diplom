@@ -68,53 +68,32 @@ export const Plots: FC<PlotsPropsType> = (props) => {
         <Plot
           data={[
             {
-              x: pointsZArray,
-              y: pointsYe2Array,
-              type: 'scatter',
-              mode: 'lines',
-            },
-            {
-              x: pointsZArray,
-              y: pointsYi2Array,
-              type: 'scatter',
-              mode: 'lines',
-            },
-          ]}
-          layout={{
-            width: 500,
-            height: 400,
-            title: 'Te, Ti',
-            xaxis: {
-              title: 'z (мкм)',
-              titlefont: { size: 12 },
-            },
-            showlegend: false,
-          }}
-        />
-        <Plot
-          data={[
-            {
               x: time,
               y: pointsY1TimeArray,
               type: 'scatter',
               mode: 'lines',
+              name: 'ионная решётка',
             },
             {
               x: time,
               y: pointsY2TimeArray,
               type: 'scatter',
               mode: 'lines',
+              name: 'электронный газ',
             },
           ]}
           layout={{
-            width: 500,
+            width: 1000,
             height: 400,
             title: 'Te, Ti',
             xaxis: {
               title: 'время (фс)',
               titlefont: { size: 12 },
             },
-            showlegend: false,
+            yaxis: {
+              title: 'Температура (K)',
+              titlefont: { size: 12 },
+            },
           }}
         />
       </div>
