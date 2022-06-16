@@ -6,8 +6,8 @@ from src.utils.constants import *
 class Conditions:
 
     @staticmethod
-    def fill_init_cond(arrays) -> None:
-        tmpe0, tmpe1, tmpe2, tmpi0, tmpi1, tmpi2 = arrays
+    def fill_init_cond() -> None:
+        F = np.full((nx+1, ny+1, nz+1), init_var)
         tmpe0 = np.full((nx+1, ny+1, nz+1), init_var)
         tmpe1 = np.full((nx+1, ny+1, nz+1), init_var)
         tmpe2 = np.full((nx+1, ny+1, nz+1), init_var)
@@ -15,6 +15,7 @@ class Conditions:
         tmpi0 = np.full((nx+1, ny+1, nz+1), init_var)
         tmpi1 = np.full((nx+1, ny+1, nz+1), init_var)
         tmpi2 = np.full((nx+1, ny+1, nz+1), init_var)
+        return F, tmpe0, tmpe1, tmpe2, tmpi0, tmpi1, tmpi2
 
     @staticmethod
     def fill_border_cond1():

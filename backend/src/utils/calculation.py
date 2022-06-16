@@ -5,8 +5,15 @@ from src.utils.service import MainCalculationService as ms
 class Calculation:
 
     @staticmethod
-    def calculation_1(time: float, data: dict):
-        def calculation1(time: float, data: dict):
+    def calculation_1(time: float, data: dict, **kwargs):
+        def calculation1(time: float, data: dict, **kwargs):
+            F = kwargs['F']
+            tmpe0 = kwargs['tmpe0']
+            tmpi0 = kwargs['tmpi0']
+            tmpi1 = kwargs['tmpi1']
+            tmpi2 = kwargs['tmpi2']
+            tmpe1 = kwargs['tmpe1']
+            tmpe2 = kwargs['tmpe2']
             F[:, :, :] = fe * time * np.exp(-ms.beta(data=data) * time)
 
             tmpe1[1:nx, 1:ny, 1:nz] = tmpe0[1:nx, 1:ny, 1:nz] + dt * ms.a1(data=data) * (
@@ -46,7 +53,14 @@ class Calculation:
             tmpi1[:, ny] = tmpi1[:, ny - 1]
 
     @staticmethod
-    def calculation_2(time: float, data: dict):
+    def calculation_2(time: float, data: dict, **kwargs):
+        F = kwargs['F']
+        tmpe0 = kwargs['tmpe0']
+        tmpi0 = kwargs['tmpi0']
+        tmpi1 = kwargs['tmpi1']
+        tmpi2 = kwargs['tmpi2']
+        tmpe1 = kwargs['tmpe1']
+        tmpe2 = kwargs['tmpe2']
         F[:, :, :] = fe * time * np.exp(-ms.beta(data=data) * time)
 
         tmpe2[1:nx, 1:ny, 1:nz] = tmpe0[1:nx, 1:ny, 1:nz] * ms.a1(data=data) * dt * (

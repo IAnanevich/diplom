@@ -43,17 +43,6 @@ u0 = 3.24e+5
 # gamma el-phonon, W/cm3K
 gamma = 0.25e+11
 
-init_val = 1e-16
-
-F = np.full((nx + 1, ny + 1, nz + 1), init_val)
-tmpe0 = np.full((nx + 1, ny + 1, nz + 1), init_val)
-tmpe1 = np.full((nx + 1, ny + 1, nz + 1), init_val)
-tmpe2 = np.full((nx + 1, ny + 1, nz + 1), init_val)
-
-tmpi0 = np.full((nx + 1, ny + 1, nz + 1), init_val)
-tmpi1 = np.full((nx + 1, ny + 1, nz + 1), init_val)
-tmpi2 = np.full((nx + 1, ny + 1, nz + 1), init_val)
-
 xe = np.exp(-(x[(nx + 1) // 2] - x) ** 2)
 ye = np.exp(-(y[(ny + 1) // 2] - y) ** 2)
 ze = np.exp(-z)

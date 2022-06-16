@@ -2,9 +2,10 @@ import numpy as np
 import time
 from fastapi import FastAPI, WebSocket
 
-from src.utils.constants import tmpe2, tmpi2, tmpe1, tmpi1, tmpe0, tmpi0, nz, dz
+from src.utils.conditions import Conditions
+from src.utils.constants import nz, dz
 from src.utils.calculation import dt, Calculation, nx, ny
-from src.utils.service import Validation
+from src.utils.service import Validation, MainCalculationService
 
 app = FastAPI()
 
@@ -19,7 +20,10 @@ async def websocket_endpoint(websocket: WebSocket):
         await websocket.send(message='You need to fill in all fields for calculations')
         await websocket.close()
 
-    Calculation.calculation_1(time=i * dt, data=data)
+    F, tmpe0, tmpi0, tmpi1, tmpi2, tmpe1, tmpe2 = Conditions.fill_init_cond()
+    Calculation.calculation_1(
+        time=i * dt, data=data, F=F, tmpe0=tmpe0, tmpi0=tmpi0, tmpi1=tmpi1, tmpi2=tmpi2, tmpe1=tmpe1, tmpe2=tmpe2
+    )
     while True:
         try:
 
@@ -28,11 +32,13 @@ async def websocket_endpoint(websocket: WebSocket):
 
             tmpi0[:] = tmpi1[:]
             tmpi1[:] = tmpi2[:]
-            Calculation.calculation_2(i * dt, data=data)
+            Calculation.calculation_2(
+                i * dt, data=data, F=F, tmpe0=tmpe0, tmpi0=tmpi0, tmpi1=tmpi1, tmpi2=tmpi2, tmpe1=tmpe1, tmpe2=tmpe2
+            )
 
             resp = {
                 'step': i,
-                't': i * dt,
+                't': MainCalculationService.t0(data=data) * dt * 1e+15 * i,
                 # for 2d
                 'temp_e': tmpe2[:, ny // 2, :].tolist(),
                 'temp_i': tmpi2[:, ny // 2, :].tolist(),
@@ -47,7 +53,7 @@ async def websocket_endpoint(websocket: WebSocket):
                 'z': np.linspace(0, nz * dz, nz).tolist()
             }
 
-            if i %5 == 0:
+            if i % 5 == 0:
                 time.sleep(0.05)
 
                 await websocket.send_json(data=resp, mode='binary')
@@ -59,8 +65,3 @@ async def websocket_endpoint(websocket: WebSocket):
         except Exception as e:
             print('error:', e)
             break
-
-
-@app.get('/')
-def hello_world():
-    return 'Hello World!'
